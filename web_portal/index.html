@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoSign | Sign Language Recognition System</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <span class="logo-text">EchoSign</span>
+        </div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="#tech">Tech Stack</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="animate-up">Bridging the Gap Through <span class="gradient-text">Gesture</span></h1>
+                <p class="hero-subtitle animate-up delay-1">A state-of-the-art Sign Language to Text and Speech
+                    conversion system powered by Deep Learning and Computer Vision.</p>
+                <div class="cta-container animate-up delay-2">
+                    <button id="launch-btn" class="primary-btn">
+                        <span class="btn-icon">🚀</span>
+                        <span class="btn-text">Launch Application</span>
+                    </button>
+                    <a href="#features" class="secondary-btn">Explore Features</a>
+                </div>
+            </div>
+            <div class="hero-visual animate-fade delay-3">
+                <div class="glass-card main-visual image-mode">
+                    <img src="landing-image.png" alt="Sign Language AI Tracking" class="hero-img">
+                    <div class="visual-label">Real-time Recognition</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <h2 class="section-title">Powerful Capabilities</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feat-icon">🎯</div>
+                    <h3>Precision Tracking</h3>
+                    <p>Utilizing MediaPipe for pinpoint accuracy in hand landmark detection with high-frequency updates.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feat-icon">🧠</div>
+                    <h3>CNN Intelligence</h3>
+                    <p>Custom trained Convolutional Neural Network (CNN) architecture optimized for sign gesture
+                        classification.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feat-icon">🔊</div>
+                    <h3>Vocal Synthesis</h3>
+                    <p>Instantaneous text-to-speech conversion allows for natural communication with spoken-word
+                        feedback.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feat-icon">✨</div>
+                    <h3>Smart Suggestions</h3>
+                    <p>Context-aware word suggestions and spell-checking powered by Enchant integration.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tech" class="tech-stack">
+            <h2 class="section-title">Technology Under the Hood</h2>
+            <div class="tech-tags">
+                <span>Python</span>
+                <span>TensorFlow</span>
+                <span>Keras</span>
+                <span>OpenCV</span>
+                <span>MediaPipe</span>
+                <span>Tkinter</span>
+                <span>NumPy</span>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 EchoSign Project. Built for Social Impact.</p>
+    </footer>
+
+    <!-- Launching Overlay -->
+    <div id="launch-overlay" class="overlay hidden">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <h3>Preparing Neural Engines...</h3>
+            <p>The application is starting in a separate window.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
