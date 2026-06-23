@@ -2,6 +2,11 @@
 
 This project implements a real-time sign language recognition system using computer vision and deep learning. It can detect American Sign Language (ASL) gestures through a webcam and convert them to text and speech.
 
+
+**🔗 Live demo:** [https://sign-language-recognitiontool.vercel.app](https://sign-language-recognitiontool.vercel.app)
+*(Note: backend runs on a free-tier host and may take ~30s to wake up on first request)*
+
+
 ## Features
 
 - Real-time hand gesture detection using MediaPipe
