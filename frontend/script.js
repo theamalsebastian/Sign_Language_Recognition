@@ -25,6 +25,34 @@ document.addEventListener('DOMContentLoaded', () => {
     let ws;
     let isStreaming = false;
 
+    // --- Health check: wait for backend to wake up before connecting ---
+    async function waitForServer(maxAttempts = 30) {
+        const protocol = window.location.protocol;
+        const host = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'localhost:8000'
+            : window.location.host;
+        const healthUrl = `${protocol}//${host}/health`;
+
+        statusDot.className = "dot disconnected";
+
+        for (let i = 1; i <= maxAttempts; i++) {
+            statusText.innerText = `Waking up server... (${i}/${maxAttempts})`;
+            try {
+                const res = await fetch(healthUrl);
+                if (res.ok) {
+                    console.log("Server is up!");
+                    return true;
+                }
+            } catch (e) {
+                // Server not ready yet, keep retrying
+            }
+            await new Promise(r => setTimeout(r, 3000)); // wait 3 seconds between tries
+        }
+
+        statusText.innerText = "Server unavailable. Please refresh.";
+        return false;
+    }
+
     // 1. Setup Webcam
     async function setupWebcam() {
         try {
@@ -33,12 +61,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             video.srcObject = stream;
             
-            // Wait for video to load to set canvas size
-            video.onloadedmetadata = () => {
+            video.onloadedmetadata = async () => {
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 isStreaming = true;
-                connectWebSocket(); // Connect WS only after video is ready
+
+                // Wait for server before opening WebSocket
+                const serverReady = await waitForServer();
+                if (serverReady) {
+                    connectWebSocket();
+                }
             };
         } catch (err) {
             console.error("Error accessing webcam: ", err);
@@ -50,12 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Setup WebSocket
     function connectWebSocket() {
-        // Use wss:// in production, ws:// locally
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        // For local development, assume backend is at localhost:8000
         const wsUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? `ws://localhost:8000/ws/predict`
-            : `${protocol}//${window.location.host}/ws/predict`; // Production assumption
+            : `${protocol}//${window.location.host}/ws/predict`;
             
         ws = new WebSocket(wsUrl);
 
@@ -63,8 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("WebSocket connected");
             statusText.innerText = "Live";
             statusDot.className = "dot connected";
-            
-            // Start sending frames
             sendFrames();
         };
 
@@ -75,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateUI(data);
             }
             
-            // Ask for the next frame ONLY after the server has finished processing the current one
             if (data.type === 'prediction') {
                 requestAnimationFrame(sendFrames);
             }
@@ -83,11 +110,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ws.onclose = () => {
             console.log("WebSocket disconnected");
-            statusText.innerText = "Disconnected";
+            statusText.innerText = "Disconnected — reconnecting...";
             statusDot.className = "dot disconnected";
-            
-            // Attempt to reconnect after 3 seconds
-            setTimeout(connectWebSocket, 3000);
+            // Retry the full health-check + reconnect cycle
+            setTimeout(async () => {
+                const serverReady = await waitForServer();
+                if (serverReady) connectWebSocket();
+            }, 3000);
         };
 
         ws.onerror = (err) => {
@@ -99,19 +128,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function sendFrames() {
         if (!isStreaming || ws.readyState !== WebSocket.OPEN) return;
 
-        // Draw current video frame to canvas
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        // Get base64 string with high enough quality to prevent MediaPipe tracking loss
         const base64Img = canvas.toDataURL('image/jpeg', 0.8);
         
-        // Send to backend
         ws.send(JSON.stringify({
             type: 'frame',
             image: base64Img
         }));
-        
-        // Notice: setTimeout is removed. The next frame is triggered by ws.onmessage
     }
 
     // 4. Update UI with backend data
@@ -127,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (data.sentence !== undefined) {
-            // Replace double spaces with visual space for clarity if needed
             sentenceDisplay.innerText = data.sentence;
         }
 
@@ -139,12 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 5. Button Event Listeners
-    
-    // Speak using Web Speech API
     btnSpeak.addEventListener('click', () => {
         const textToSpeak = sentenceDisplay.innerText.trim();
         if (textToSpeak !== "") {
-            // Use toLowerCase() so the browser reads it as a full word instead of spelling an acronym
             const utterance = new SpeechSynthesisUtterance(textToSpeak.toLowerCase());
             utterance.rate = 1.0;
             utterance.pitch = 1.0;
@@ -152,14 +171,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Clear string
     btnClear.addEventListener('click', () => {
         if (ws && ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({ type: 'clear' }));
         }
     });
 
-    // Suggestion buttons
     sugButtons.forEach((btn, index) => {
         btn.addEventListener('click', () => {
             if (btn.innerText.trim() !== "" && ws && ws.readyState === WebSocket.OPEN) {
