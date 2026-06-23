@@ -39,7 +39,7 @@ os.environ["THEANO_FLAGS"] = "device=cuda, assert_no_cpu_op=True"
 
 # Initialize models
 print("Loading model and enchant dictionary...")
-ddd = enchant.Dict("en-US")
+ddd = SpellChecker()
 model = load_model('cnn8grps_rad1_model.h5')
 hd = HandDetector(maxHands=1)
 hd2 = HandDetector(maxHands=1)
@@ -596,8 +596,7 @@ class SignLanguageSession:
             if len(word.strip()) != 0:
                 # Cap the word length to prevent pyenchant from freezing the server calculating Levenshtein distances on long garbage strings
                 safe_word = word[-15:] if len(word) > 15 else word
-                ddd.check(safe_word)
-                suggestions = ddd.suggest(safe_word)
+                suggestions = list(ddd.candidates(safe_word) or [])
                 lenn = len(suggestions)
                 self.word4 = suggestions[3] if lenn >= 4 else " "
                 self.word3 = suggestions[2] if lenn >= 3 else " "
