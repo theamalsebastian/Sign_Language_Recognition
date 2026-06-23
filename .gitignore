@@ -15,5 +15,20 @@ venv.bak/
 .idea/
 .vscode/
 
-# Ignore macOS hidden files
+# macOS
 .DS_Store
+
+# Large model file - managed via Git LFS
+# cnn8grps_rad1_model.h5
+
+# Scratch/temp files
+fix_logic.py
+run_portal.py
+final_pred_backup.py
+data_collection_binary.py
+data_collection_final.py
+prediction_wo_gui.py
+white.jpg
+
+# AtoZ training data
+AtoZ_3.1/

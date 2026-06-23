@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language To Text & Speech</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Title Bar -->
+        <header class="title-bar">
+            <h1>✋ Sign Language To Text & Speech ✋</h1>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Camera Feed Panel -->
+            <section class="panel camera-panel">
+                <div class="panel-header">CAMERA FEED</div>
+                <div class="video-container">
+                    <video id="webcam" autoplay playsinline muted></video>
+                    <canvas id="canvas" style="display: none;"></canvas>
+                </div>
+            </section>
+
+            <!-- Skeleton Panel -->
+            <section class="panel skeleton-panel">
+                <div class="panel-header">HAND SKELETON</div>
+                <div class="skeleton-container">
+                    <img id="skeleton-img" src="" alt="Hand Skeleton" style="display: none;" />
+                    <div id="skeleton-placeholder" class="placeholder">WAITING FOR HAND...</div>
+                </div>
+            </section>
+
+            <!-- Right Info Panel -->
+            <section class="panel info-panel">
+                <div class="info-group">
+                    <div class="info-label">DETECTED CHARACTER</div>
+                    <div class="char-box">
+                        <span id="detected-char"> </span>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <div class="info-label">SENTENCE</div>
+                    <div class="sentence-box">
+                        <span id="sentence"> </span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="btn-speak" class="btn btn-speak">🔊 Speak</button>
+                    <button id="btn-clear" class="btn btn-clear">✕ Clear</button>
+                </div>
+
+                <div class="status-indicator">
+                    <span id="status-dot" class="dot">●</span> <span id="status-text">Connecting...</span>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Bar: Suggestions -->
+        <footer class="bottom-bar">
+            <div class="suggestions-header">💡 Suggestions</div>
+            <div class="suggestions-container">
+                <button class="btn btn-suggest" id="sug-0"> </button>
+                <button class="btn btn-suggest" id="sug-1"> </button>
+                <button class="btn btn-suggest" id="sug-2"> </button>
+                <button class="btn btn-suggest" id="sug-3"> </button>
+            </div>
+            <div class="footer-text">
+                Sign Language Recognition System • Powered by CNN & MediaPipe
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Include WebSockets Script -->
+    <script src="script.js?v=5"></script>
+</body>
+</html>
