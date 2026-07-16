@@ -1,2 +1,5 @@
 [phases.setup]
-nixPkgs = ["python310", "libGL", "glib"]
+nixPkgs = ["python310", "libGL", "glib", "mesa"]
+
+[phases.build]
+cmds = ["pip install -r requirements.txt --no-deps cvzone==1.6.1"]
